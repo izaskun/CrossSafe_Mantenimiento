@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, CrossSafe_MantenimientoActivity!</string>
-    <string name="app_name">CrossSafe_Mantenimiento</string>
-
+    <string name="hello">Welcome to Idek Solutions</string>
+    <string name="app_name">Idek Solutions</string>
+    <string name="main_no_items">No orders to display</string>
 </resources>
