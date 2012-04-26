@@ -1,5 +1,8 @@
 package idek.solutions;
 
+import idek.solutions.modelos.Dispositivo;
+import idek.solutions.modelos.Incidencia;
+
 import java.util.List;
 
 import android.graphics.drawable.Drawable;
@@ -8,6 +11,7 @@ import android.os.Bundle;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
@@ -23,35 +27,38 @@ public class Mapa extends MapActivity{
 	    
 	    mapView = (MapView) findViewById(R.id.mapview);
 	    mapView.setBuiltInZoomControls(true);
-	    
-	   /* List<Overlay> mapOverlays = mapView.getOverlays();
-	    Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-	    PosicionIncidencias itemizedoverlay = new PosicionIncidencias(drawable, this);
-	    
-	    GeoPoint point = new GeoPoint((int)(43.35589 * 1e6), (int)(-3.011609 * 1e6));
-	    OverlayItem overlayitem = new OverlayItem(point, "Kaixo EH!", "Idek Solutions se encuentra en EH");
-	    
-	    itemizedoverlay.addOverlay(overlayitem);
-	    mapOverlays.add(itemizedoverlay);*/
-	    
+	       
 	    List<Overlay> mapOverlays = mapView.getOverlays();
-		
-		// first overlay
+
 		Drawable drawable = getResources().getDrawable(R.drawable.marker);
 		SimpleItemizedOverlay itemizedOverlay = new SimpleItemizedOverlay(drawable, mapView);
 		
-		GeoPoint point = new GeoPoint((int)(51.5174723*1E6),(int)(-0.0899537*1E6));
-		OverlayItem overlayItem = new OverlayItem(point, "Tomorrow Never Dies (1997)", 
-				"(M gives Bond his mission in Daimler car)");
-		itemizedOverlay.addOverlay(overlayItem);
+		Incidencia [] lista = CrossSafe_MantenimientoActivity.listaIncidencias;
 		
-		GeoPoint point2 = new GeoPoint((int)(51.515259*1E6),(int)(-0.086623*1E6));
-		OverlayItem overlayItem2 = new OverlayItem(point2, "GoldenEye (1995)", 
-				"(Interiors Russian defence ministry council chambers in St Petersburg)");		
-		itemizedOverlay.addOverlay(overlayItem2);
+		for (int i = 0; i < lista.length; i++) {
+			Incidencia inci = lista[i];
+			Dispositivo dis = inci.getIncidenciaDisp();
+			int latitud = (int)Float.parseFloat(dis.getDisLatitud());
+			int longitud = (int)Float.parseFloat(dis.getDispLongitud());
+			GeoPoint point = new GeoPoint((int)(latitud*1E6),(int)(longitud*1E6));
+			OverlayItem overlayItem = new OverlayItem(point,inci.getIncidenciaHora(), inci.getIncidenceDesc());
+			
+			itemizedOverlay.addOverlay(overlayItem);
+		}
 		
+		// Nos muestra la posición actual del empleado 
+		final MyLocationOverlay myLocation = new MyLocationOverlay(this, mapView);
+		mapOverlays.add(myLocation);
+        myLocation.disableCompass();
+        myLocation.enableMyLocation();
+        myLocation.runOnFirstFix(new Runnable() {
+            public void run() {
+                mapView.getController().animateTo(myLocation.getMyLocation());
+            }
+        });
+				
 		mapOverlays.add(itemizedOverlay);
-		
+		itemizedOverlay.populateNow();
 	}
 	
 	@Override

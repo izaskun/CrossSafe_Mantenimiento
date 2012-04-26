@@ -1,9 +1,14 @@
 package idek.solutions;
 
 
+import idek.solutions.modelos.Dispositivo;
+import idek.solutions.modelos.Incidencia;
+
 import java.util.ArrayList;
+
+import com.google.gson.annotations.SerializedName;
+
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,13 +19,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class Mantenimiento extends ListActivity implements OnItemClickListener{
     
-	private ProgressDialog m_ProgressDialog = null; 
-    private ArrayList<Incidence> m_incidences = null;
-    private OrderAdapter m_adapter;
+	private OrderAdapter m_adapter;
     
 	/** Called when the activity is first created. */
     @Override
@@ -28,8 +32,7 @@ public class Mantenimiento extends ListActivity implements OnItemClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         getListView().setOnItemClickListener(this);
-        m_incidences =  getIncidences();
-        m_adapter = new OrderAdapter(this, R.layout.row, m_incidences);
+        m_adapter = new OrderAdapter(this, R.layout.mantenimiento, CrossSafe_MantenimientoActivity.listaIncidencias);
         setListAdapter(m_adapter);
        
     }
@@ -37,15 +40,16 @@ public class Mantenimiento extends ListActivity implements OnItemClickListener{
     public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
 		
 		Intent intent = new Intent ("android.intent.action.DESCRIPCION");
+		intent.putExtra("POSITION", position);
 		startActivity(intent);
 	}
     
     
-    public class OrderAdapter extends ArrayAdapter<Incidence> {
+    public class OrderAdapter extends ArrayAdapter<Incidencia> {
 
-        private ArrayList<Incidence> items;
+        private Incidencia[] items;
 
-        public OrderAdapter(Context context, int textViewResourceId, ArrayList<Incidence> items) {
+        public OrderAdapter(Context context, int textViewResourceId, Incidencia[] items) {
                 super(context, textViewResourceId, items);
                 this.items = items;
         }
@@ -55,48 +59,32 @@ public class Mantenimiento extends ListActivity implements OnItemClickListener{
                 View v = convertView;
                 if (v == null) {
                     LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    v = vi.inflate(R.layout.row, null);
+                    v = vi.inflate(R.layout.mantenimiento, null);
                 }
-                Incidence o = items.get(position);
+                Incidencia o = items[position];
                 if (o != null) {
-                		TextView it = (TextView) v.findViewById(R.id.idText);
-                        TextView nt = (TextView) v.findViewById(R.id.nametext);
-                        TextView st = (TextView) v.findViewById(R.id.statusText);
-                        if (it != null) {
-                            it.setText("Id: "+o.getIncidenceId());                            
-                        }
-                        if (nt != null) {
-                              nt.setText("Name: "+o.getIncidenceName());                            
-                        }
-                        if(st != null){
-                              st.setText("Status: "+ o.getIncidenceStatus());
-                        }
+                		TextView it = (TextView) v.findViewById(R.id.hora);
+                        TextView nt = (TextView) v.findViewById(R.id.statusText);
+                        ImageView imagen = (ImageView) v.findViewById(R.id.icon);
+                        
+                        it.setText("Hora: "+o.getIncidenciaHora());                            
+                        
+                        nt.setText("Estado: "+o.getIncidenciaEst());
+                        
+                        int resource;
+                        
+                        if (o.getIncidenciaEst().equals("Abierto")) {
+                        	resource = R.drawable.marker;
+						} else {
+							resource = R.drawable.marker2;	
+						}
+                        
+                        imagen.setImageResource(resource);
                 }
                 return v;
         }
     }
     
-    
-    private ArrayList<Incidence> getIncidences(){
-        try{
-            m_incidences = new ArrayList<Incidence>();
-            Incidence o1 = new Incidence();
-            o1.setIncidenceId(0);
-            o1.setIncidenceName("Rakel");
-            o1.setIncidenceStatus("Pending");
-            Incidence o2 = new Incidence();
-            o2.setIncidenceId(1);
-            o2.setIncidenceName("SF Advertisement");
-            o2.setIncidenceStatus("Completed");
-            m_incidences.add(o1);
-            m_incidences.add(o2);
-               Thread.sleep(2000);
-            Log.i("ARRAY", ""+ m_incidences.size());
-          } catch (Exception e) { 
-            Log.e("BACKGROUND_PROC", e.getMessage());
-          }
-          return m_incidences;
-      }
    }
 
 

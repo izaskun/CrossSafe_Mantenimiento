@@ -18,6 +18,7 @@ package idek.solutions;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.widget.Toast;
 
@@ -38,7 +39,11 @@ public class SimpleItemizedOverlay extends BalloonItemizedOverlay<OverlayItem> {
 
 	public void addOverlay(OverlayItem overlay) {
 	    m_overlays.add(overlay);
-	    populate();
+	    
+	}
+	
+	public void populateNow(){
+		populate();
 	}
 
 	@Override
@@ -53,8 +58,13 @@ public class SimpleItemizedOverlay extends BalloonItemizedOverlay<OverlayItem> {
 
 	@Override
 	protected boolean onBalloonTap(int index, OverlayItem item) {
-		Toast.makeText(c, "onBalloonTap for overlay index " + index,
-				Toast.LENGTH_LONG).show();
+		
+		Intent intent = new Intent ("android.intent.action.DESCRIPCION");
+		intent.putExtra("POSITION", index);
+		c.startActivity(intent);
+		
+		/*Toast.makeText(c, "onBalloonTap for overlay index " + index,
+				Toast.LENGTH_LONG).show();*/
 		return true;
 	}
 	

@@ -1,17 +1,41 @@
 package idek.solutions;
 
+import idek.solutions.modelos.Incidencia;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.UUID;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import com.google.gson.Gson;
+
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.TabHost;
 
 public class CrossSafe_MantenimientoActivity extends TabActivity {
 	
+	final String HOST = "http://192.168.1.101:8888/";
+	public static Incidencia[] listaIncidencias;
+	
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.tab);
-
+	    
+	    runJSONParser();
+	    
 	    Resources res = getResources(); // Resource object to get Drawables
 	    TabHost tabHost = getTabHost();  // The activity TabHost
 	    TabHost.TabSpec spec;  // Resusable TabSpec for each tab
@@ -41,5 +65,60 @@ public class CrossSafe_MantenimientoActivity extends TabActivity {
 
 	    tabHost.setCurrentTab(0);
 	}
+	
+	public InputStream getJSONData(String url){
+		
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        URI uri;
+        InputStream data = null;
+        
+        try {
+            uri = new URI(url);
+            String h = uri.getPath();
+            HttpGet method = new HttpGet(uri);
+            HttpResponse response = httpClient.execute(method);
+            data = response.getEntity().getContent();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return data;
+    }
+	
+	public void runJSONParser(){
+		final String android_id;
+        try{
+	        Log.i("MY INFO", "Json Parser started..");
+	        Gson gson = new Gson();
+	        android_id = getAndroidId();
+	        //Reader r = new InputStreamReader(getJSONData(HOST + "idek_cross/incidencias/" + android_id));
+	        Reader r = new InputStreamReader(getAssets().open("incidencias.json"));
+	        Log.i("MY INFO", r.toString());
+	       
+	        listaIncidencias = gson.fromJson(r, Incidencia[].class);
+
+	        Log.i("MY INFO", r.toString());
+        }catch(Exception ex){
+
+        }
+	}
+	
+	public String getAndroidId (){
+		
+		final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+
+	    final String tmDevice, tmSerial, androidId;
+	    tmDevice = "" + tm.getDeviceId();
+	    tmSerial = "" + tm.getSimSerialNumber();
+	    androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+
+	    UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
+	    String deviceId = deviceUuid.toString();
+	    
+	    return deviceId;
+		
+	}
+	
+	
 
 }
