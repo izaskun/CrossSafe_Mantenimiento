@@ -4,6 +4,7 @@ import idek.solutions.modelos.Incidencia;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.google.gson.Gson;
 
+import android.app.PendingIntent;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -25,15 +27,17 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.TabHost;
 
-public class CrossSafe_MantenimientoActivity extends TabActivity {
+public class CrossSafe_Mantenimiento extends TabActivity {
 	
 	final String HOST = "http://192.168.1.101:8888/";
 	public static Incidencia[] listaIncidencias;
+	public static String android_id;
 	
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.tab);
 	    
+	    pushNotification();
 	    runJSONParser();
 	    
 	    Resources res = getResources(); // Resource object to get Drawables
@@ -66,6 +70,17 @@ public class CrossSafe_MantenimientoActivity extends TabActivity {
 	    tabHost.setCurrentTab(0);
 	}
 	
+	private void pushNotification() {
+		Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
+
+		registrationIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0));
+
+		registrationIntent.putExtra("sender", "reki03@gmail.com");
+
+		startService(registrationIntent);
+		
+	}
+
 	public InputStream getJSONData(String url){
 		
         DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -86,7 +101,6 @@ public class CrossSafe_MantenimientoActivity extends TabActivity {
     }
 	
 	public void runJSONParser(){
-		final String android_id;
         try{
 	        Log.i("MY INFO", "Json Parser started..");
 	        Gson gson = new Gson();
@@ -96,6 +110,7 @@ public class CrossSafe_MantenimientoActivity extends TabActivity {
 	        Log.i("MY INFO", r.toString());
 	       
 	        listaIncidencias = gson.fromJson(r, Incidencia[].class);
+	        
 
 	        Log.i("MY INFO", r.toString());
         }catch(Exception ex){

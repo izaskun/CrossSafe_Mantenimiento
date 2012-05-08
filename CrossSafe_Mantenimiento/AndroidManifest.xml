@@ -4,16 +4,39 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
+    <permission
+        android:name="idek.solutions.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="idek.solutions.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <uses-sdk android:minSdkVersion="8" />
-    
 
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <uses-library android:name="com.google.android.maps" />
+
+        <receiver
+            android:name=".MyC2dmReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+
+            <!-- Receive the actual message -->
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.example.myapp" />
+            </intent-filter>
+            <!-- Receive the registration id -->
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="com.example.myapp" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".CrossSafe_MantenimientoActivity"
@@ -36,7 +59,7 @@
         </activity>
         <activity
             android:name=".DescripcionIncidencia"
-            android:label="@string/hello" >
+            android:label="@string/descripcion_incidencia" >
             <intent-filter>
                 <action android:name="android.intent.action.DESCRIPCION" />
 

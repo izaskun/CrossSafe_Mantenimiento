@@ -32,7 +32,7 @@ public class Mantenimiento extends ListActivity implements OnItemClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         getListView().setOnItemClickListener(this);
-        m_adapter = new OrderAdapter(this, R.layout.mantenimiento, CrossSafe_MantenimientoActivity.listaIncidencias);
+        m_adapter = new OrderAdapter(this, R.layout.mantenimiento, CrossSafe_Mantenimiento.listaIncidencias);
         setListAdapter(m_adapter);
        
     }

@@ -33,7 +33,7 @@ public class Mapa extends MapActivity{
 		Drawable drawable = getResources().getDrawable(R.drawable.marker);
 		SimpleItemizedOverlay itemizedOverlay = new SimpleItemizedOverlay(drawable, mapView);
 		
-		Incidencia [] lista = CrossSafe_MantenimientoActivity.listaIncidencias;
+		Incidencia [] lista = CrossSafe_Mantenimiento.listaIncidencias;
 		
 		for (int i = 0; i < lista.length; i++) {
 			Incidencia inci = lista[i];

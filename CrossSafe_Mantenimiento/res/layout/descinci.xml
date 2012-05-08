@@ -2,58 +2,64 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:padding="1dp">
+
+    <TextView
+        android:id="@+id/dispId"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="0.50"
+        android:gravity="center_vertical"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="1mm"
+        />
+    
+    <TextView
+        android:id="@+id/dispLocalidad"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="0.50"
+        android:gravity="center_vertical" 
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="1mm"
+        />
 
-    <TextView
-            android:id="@+id/dispId"
-            android:layout_width="fill_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-     />
-    
-    <TextView
-            android:id="@+id/dispLocalidad"
-            android:layout_width="fill_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-     />
-     <LinearLayout
-        android:layout_width="match_parent"
+   <TextView
+        android:id="@+id/dispStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_marginLeft="1mm"
+        android:layout_weight="0.50"
+        android:gravity="center_vertical"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/cbEstado"
+        android:layout_width="242dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
-    
-	    <TextView
-	            android:id="@+id/dispStatus"
-	            android:layout_width="fill_parent"
-	            android:layout_height="0dip"
-	            android:layout_weight="1"
-	            android:gravity="center_vertical"
-	     />
-
-	    <Spinner
-	        android:id="@+id/cbEstado"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1" />
-
-    </LinearLayout>
-    
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_marginLeft="1mm" />
+
      <TextView
-            android:id="@+id/dispDesc"
-            android:layout_width="fill_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-     />
-     
-    <Button
-            android:id="@+id/bGuardar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Guardar" />
-
-  
+         android:id="@+id/dispDesc"
+         android:layout_width="fill_parent"
+         android:layout_height="0dip"
+         android:layout_weight="0.60"
+         android:gravity="center_vertical" 
+         android:textSize="20dp"
+         android:textStyle="bold"
+         android:layout_marginLeft="1mm"
+         />
+
+     <Button
+         android:id="@+id/bGuardar"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:text="Guardar" />
 
 </LinearLayout>

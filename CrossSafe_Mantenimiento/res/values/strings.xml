@@ -3,4 +3,5 @@
     <string name="hello">Welcome to Idek Solutions</string>
     <string name="app_name">Idek Solutions</string>
     <string name="main_no_items">No orders to display</string>
+    <string name="descripcion_incidencia">Idek Solutions, descripcion incidencia</string>
 </resources>
