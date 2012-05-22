@@ -22,6 +22,9 @@ public class Mapa extends MapActivity{
 	 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		Drawable drawable = null;
+		SimpleItemizedOverlay abiertoOverlay, cerradoOverlay;
+		
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.mapa);
 	    
@@ -29,11 +32,14 @@ public class Mapa extends MapActivity{
 	    mapView.setBuiltInZoomControls(true);
 	       
 	    List<Overlay> mapOverlays = mapView.getOverlays();
-
-		Drawable drawable = getResources().getDrawable(R.drawable.marker);
-		SimpleItemizedOverlay itemizedOverlay = new SimpleItemizedOverlay(drawable, mapView);
+		   
+	    Incidencia [] lista = CrossSafe_Mantenimiento.listaIncidencias;
+	    
+	    drawable = getResources().getDrawable(R.drawable.marker);
+	    cerradoOverlay = new SimpleItemizedOverlay(drawable, mapView);
+	    drawable = getResources().getDrawable(R.drawable.marker2);
+	    abiertoOverlay = new SimpleItemizedOverlay(drawable, mapView);
 		
-		Incidencia [] lista = CrossSafe_Mantenimiento.listaIncidencias;
 		
 		for (int i = 0; i < lista.length; i++) {
 			Incidencia inci = lista[i];
@@ -42,8 +48,12 @@ public class Mapa extends MapActivity{
 			int longitud = (int)Float.parseFloat(dis.getDispLongitud());
 			GeoPoint point = new GeoPoint((int)(latitud*1E6),(int)(longitud*1E6));
 			OverlayItem overlayItem = new OverlayItem(point,inci.getIncidenciaHora(), inci.getIncidenceDesc());
+			if (inci.getIncidenciaEst().equals("cerrado")) {
+				cerradoOverlay.addOverlay(overlayItem);
+			} else {
+				abiertoOverlay.addOverlay(overlayItem);
+			}
 			
-			itemizedOverlay.addOverlay(overlayItem);
 		}
 		
 		// Nos muestra la posición actual del empleado 
@@ -57,8 +67,10 @@ public class Mapa extends MapActivity{
             }
         });
 				
-		mapOverlays.add(itemizedOverlay);
-		itemizedOverlay.populateNow();
+		mapOverlays.add(cerradoOverlay);
+		mapOverlays.add(abiertoOverlay);
+		cerradoOverlay.populateNow();
+		abiertoOverlay.populateNow();
 	}
 	
 	@Override

@@ -16,124 +16,103 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.google.gson.Gson;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.TabHost;
+import android.widget.Toast;
 
 public class CrossSafe_Mantenimiento extends TabActivity {
 	
-	final String HOST = "http://192.168.1.101:8888/";
-	public static Incidencia[] listaIncidencias;
+	public final static String AUTH = "authentication";
 	public static String android_id;
-	
+	public static final String HOST = "http://192.168.1.106:8888/";
+	public static Incidencia[] listaIncidencias;
+
 	public void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
-	    setContentView(R.layout.tab);
-	    
-	    pushNotification();
-	    runJSONParser();
-	    
-	    Resources res = getResources(); // Resource object to get Drawables
-	    TabHost tabHost = getTabHost();  // The activity TabHost
-	    TabHost.TabSpec spec;  // Resusable TabSpec for each tab
-	    Intent intent;  // Reusable Intent for each tab
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.tab);
 
-	    // Create an Intent to launch an Activity for the tab (to be reused)
-	    intent = new Intent().setClass(this, Mantenimiento.class);
+		Resources res = getResources(); // Resource object to get Drawables
+		TabHost tabHost = getTabHost(); // The activity TabHost
+		TabHost.TabSpec spec; // Resusable TabSpec for each tab
+		Intent intent; // Reusable Intent for each tab
 
-	    // Initialize a TabSpec for each tab and add it to the TabHost
-	    spec = tabHost.newTabSpec("listaIncidencias").setIndicator("Lista Incidencias",
-	                      res.getDrawable(R.drawable.ic_tab_incidencias))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);
+		// Create an Intent to launch an Activity for the tab (to be reused)
+		intent = new Intent().setClass(this, Mantenimiento.class);
 
-	    // Do the same for the other tabs
-	    intent = new Intent().setClass(this, Mapa.class);
-	    spec = tabHost.newTabSpec("mapa").setIndicator("Mapa Incidencias",
-	                      res.getDrawable(R.drawable.ic_tab_mapas))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);/*
+		// Initialize a TabSpec for each tab and add it to the TabHost
+		spec = tabHost
+				.newTabSpec("listaIncidencias")
+				.setIndicator("Lista Incidencias",
+						res.getDrawable(R.drawable.ic_tab_incidencias))
+				.setContent(intent);
+		tabHost.addTab(spec);
 
-	    intent = new Intent().setClass(this, SongsActivity.class);
-	    spec = tabHost.newTabSpec("songs").setIndicator("Songs",
-	                      res.getDrawable(R.drawable.ic_tab_songs))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);*/
+		// Do the same for the other tabs
+		intent = new Intent().setClass(this, Mapa.class);
+		spec = tabHost
+				.newTabSpec("mapa")
+				.setIndicator("Mapa Incidencias",
+						res.getDrawable(R.drawable.ic_tab_mapas))
+				.setContent(intent);
+		tabHost.addTab(spec);/*
+							 * 
+							 * intent = new Intent().setClass(this,
+							 * SongsActivity.class); spec =
+							 * tabHost.newTabSpec("songs").setIndicator("Songs",
+							 * res.getDrawable(R.drawable.ic_tab_songs))
+							 * .setContent(intent); tabHost.addTab(spec);
+							 */
 
-	    tabHost.setCurrentTab(0);
+		tabHost.setCurrentTab(0);
+		register();
+		showRegistrationId();
 	}
 	
-	private void pushNotification() {
-		Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
-
-		registrationIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0));
-
-		registrationIntent.putExtra("sender", "reki03@gmail.com");
-
-		startService(registrationIntent);
-		
+	public void register() {
+		Log.w("IKER", "start registration process");
+		Intent intent = new Intent("com.google.android.c2dm.intent.REGISTER");
+		intent.putExtra("app",
+				PendingIntent.getBroadcast(this, 0, new Intent(), 0));
+		// Sender currently not used
+		intent.putExtra("sender", "ideksolutions@gmail.com");
+		startService(intent);
 	}
 
-	public InputStream getJSONData(String url){
-		
-        DefaultHttpClient httpClient = new DefaultHttpClient();
-        URI uri;
-        InputStream data = null;
-        
-        try {
-            uri = new URI(url);
-            String h = uri.getPath();
-            HttpGet method = new HttpGet(uri);
-            HttpResponse response = httpClient.execute(method);
-            data = response.getEntity().getContent();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        return data;
-    }
-	
-	public void runJSONParser(){
-        try{
-	        Log.i("MY INFO", "Json Parser started..");
-	        Gson gson = new Gson();
-	        android_id = getAndroidId();
-	        //Reader r = new InputStreamReader(getJSONData(HOST + "idek_cross/incidencias/" + android_id));
-	        Reader r = new InputStreamReader(getAssets().open("incidencias.json"));
-	        Log.i("MY INFO", r.toString());
-	       
-	        listaIncidencias = gson.fromJson(r, Incidencia[].class);
-	        
+	public void showRegistrationId() {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		String string = prefs.getString(AUTH, "n/a");
+		//Toast.makeText(this, string, Toast.LENGTH_LONG).show();
+		Log.d("IKER", string);
 
-	        Log.i("MY INFO", r.toString());
-        }catch(Exception ex){
-
-        }
 	}
 	
-	public String getAndroidId (){
+public static void getAndroidId (Context c){
 		
-		final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+		final TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
 
 	    final String tmDevice, tmSerial, androidId;
 	    tmDevice = "" + tm.getDeviceId();
 	    tmSerial = "" + tm.getSimSerialNumber();
-	    androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+	    androidId = "" + android.provider.Settings.Secure.getString(c.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
 
 	    UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
 	    String deviceId = deviceUuid.toString();
 	    
-	    return deviceId;
+	     CrossSafe_Mantenimiento.android_id = deviceId;
 		
 	}
-	
-	
 
 }

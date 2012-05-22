@@ -1,5 +1,12 @@
 package idek.solutions;
 
+import java.io.InputStream;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import idek.solutions.modelos.Incidencia;
 import android.app.Activity;
 import android.content.Context;
@@ -21,10 +28,13 @@ public class DescripcionIncidencia extends Activity {
 
 	Incidencia inci;
 	Button b;
-
+	public static String selected;
+	int position;
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		int position = getIntent().getIntExtra("POSITION", -1);
+		position = getIntent().getIntExtra("POSITION", -1);
+		
 
 		if (position > -1) {
 			inci = CrossSafe_Mantenimiento.listaIncidencias[position];
@@ -60,11 +70,39 @@ public class DescripcionIncidencia extends Activity {
 			public void onClick(View v) {
 				
 				
+				if (!selected.equals("Averiado")) {
+					/*Guardar en la BD*/
+					Log.i("IKER","select");
+					CrossSafe_Mantenimiento.listaIncidencias[position].getIncidenciaDisp().setDispEst(selected);
+					CrossSafe_Mantenimiento.listaIncidencias[position].setIncidenciaEst("cerrado");
+					enviarJSON();
+				}
 				Toast msg= Toast.makeText(getBaseContext(), "Datos guardados", Toast.LENGTH_LONG);
 				msg.show();
+				finish();
 			}
 		});
 
 	}
+	
+	public void enviarJSON(){
+		
+		InputStream content = null;
+		int incidence_id = CrossSafe_Mantenimiento.listaIncidencias[position].getIncidenceId();
+		String incidence_estado = CrossSafe_Mantenimiento.listaIncidencias[position].getIncidenciaEst();
+		int iddisp = CrossSafe_Mantenimiento.listaIncidencias[position].getIncidenciaDisp().getDispId();
+		
+		
+	     try{  
+			HttpClient httpclient = new DefaultHttpClient();
+			Log.i("IKER","muahahha"+CrossSafe_Mantenimiento.android_id);
+		    HttpResponse response = httpclient.execute(new HttpGet(CrossSafe_Mantenimiento.HOST+"idek_cross/incidencia/" + incidence_id + "/estado/"+ incidence_estado+"/disp/"+ iddisp +"/id/"+ CrossSafe_Mantenimiento.android_id ));
+		    content = response.getEntity().getContent();
+		} catch (Exception e) {
+		    Log.d("[GET REQUEST]", "Network exception", e);
+		    e.printStackTrace();
+	        }
+		
+		}
 
 }
