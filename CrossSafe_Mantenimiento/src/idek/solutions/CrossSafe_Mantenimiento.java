@@ -36,7 +36,7 @@ public class CrossSafe_Mantenimiento extends TabActivity {
 	
 	public final static String AUTH = "authentication";
 	public static String android_id;
-	public static final String HOST = "http://192.168.1.106:8888/";
+	public static final String HOST = "http://192.168.1.102:8888/WS/";
 	public static Incidencia[] listaIncidencias;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -112,6 +112,7 @@ public static void getAndroidId (Context c){
 	    String deviceId = deviceUuid.toString();
 	    
 	     CrossSafe_Mantenimiento.android_id = deviceId;
+	     Log.d("IKER", "DeviceID: " + deviceId);
 		
 	}
 

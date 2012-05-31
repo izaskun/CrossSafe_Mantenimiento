@@ -46,7 +46,7 @@ public class RegistrationReceiver extends BroadcastReceiver {
 					+ ", error = " + error);
 			String deviceId = Secure.getString(context.getContentResolver(),
 					Secure.ANDROID_ID);
-			createNotification(context, registrationId);
+			//createNotification(context, registrationId);
 			sendRegistrationIdToServer(deviceId, registrationId);
 			// Also save it in the preference to be able to show it later
 			saveRegistrationId(context, registrationId);

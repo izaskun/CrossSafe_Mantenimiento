@@ -71,6 +71,7 @@ public class Mapa extends MapActivity{
 		mapOverlays.add(abiertoOverlay);
 		cerradoOverlay.populateNow();
 		abiertoOverlay.populateNow();
+		mapView.invalidate();
 	}
 	
 	@Override

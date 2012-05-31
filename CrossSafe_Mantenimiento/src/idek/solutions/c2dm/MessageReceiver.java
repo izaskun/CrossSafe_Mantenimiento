@@ -30,8 +30,8 @@ public class MessageReceiver extends BroadcastReceiver {
 	public void createNotification(Context context, String payload) {
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notification = new Notification(R.drawable.ic_launcher,
-				"Message received", System.currentTimeMillis());
+		Notification notification = new Notification(android.R.drawable.ic_dialog_alert,
+				"Nueva incidencia", System.currentTimeMillis());
 		// Hide the notification after its selected
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
@@ -39,8 +39,8 @@ public class MessageReceiver extends BroadcastReceiver {
 		intent.putExtra("payload", payload);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
 				intent, 0);
-		notification.setLatestEventInfo(context, "Message",
-				"New message received", pendingIntent);
+		notification.setLatestEventInfo(context, "Mensaje",
+				"Nueva incidencia detectada", pendingIntent);
 		notificationManager.notify(0, notification);
 
 	}

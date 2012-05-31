@@ -47,11 +47,11 @@ public class DescripcionIncidencia extends Activity {
 		TextView estado = (TextView) findViewById(R.id.dispStatus);
 		TextView desc = (TextView) findViewById(R.id.dispDesc);
 
-		id.setText("Id: " + inci.getIncidenciaDisp().getDispId());
+		id.setText("Id dispositivo: " + inci.getIncidenciaDisp().getDispId());
 
 		loc.setText("Localidad: " + inci.getIncidenciaDisp().getDispLoc());
 
-		estado.setText("Estado: " + inci.getIncidenciaDisp().getDispEst());
+		estado.setText("Estado:");
 
 		desc.setText("Descripcion: " + inci.getIncidenceDesc());
 		

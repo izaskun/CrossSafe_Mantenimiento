@@ -32,7 +32,7 @@ public class MessageReceivedActivity extends Activity {
 		if (extras != null) {
 			id_inci = extras.getString("payload");
 		}
-		Log.d("IKER", "lala"+id_inci);
+
 		CrossSafe_Mantenimiento.getAndroidId(this);
 		runJSONParser();
 		for (int i = 0; i < CrossSafe_Mantenimiento.listaIncidencias.length; i++) {
